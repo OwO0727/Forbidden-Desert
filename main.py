@@ -3,7 +3,7 @@ import tkinter as tk
 import random
 
 
-GAME_BOARD_SIZE = 4
+GAME_BOARD_SIZE = 5
 STARTING_WATER = 3
 MAX_WATER = 8
 MAX_SAND = 12
@@ -13,6 +13,7 @@ game_board = [
     ["X", "S", "C", "C", "C"],
     ["C", "C", "S", "C", "C"],
     ["C", "S", "C", "C", "C"],
+    ["C", "C", "C", "S", "C"],
     ["C", "C", "C", "S", "C"]
 ]
 
