@@ -25,7 +25,7 @@ startButton.place(x=windowDims[0]//2-75, y=windowDims[1]//2-25, width=150, heigh
 rulesButton = Button(root, text="Rules", command=startRulesMenu)
 rulesButton.place(x=windowDims[0]//2-25, y=windowDims[1]//2+50, width=50, height=20)
 
-quitButton = Button(root, text="Quit", command=lambda: root.quit())
+quitButton = Button(root, text="Quit", command=lambda: root.destroy())
 quitButton.place(x=windowDims[0]//2-25, y=windowDims[1]//2+100, width=50, height=20)
 
 root.mainloop()
