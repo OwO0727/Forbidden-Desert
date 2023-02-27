@@ -3,7 +3,6 @@
 from tkinter import *
 from tkinter import ttk
 import webbrowser
-import img
 
 windowDims = (1280,720)
 
