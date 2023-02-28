@@ -3,11 +3,17 @@
 from tkinter import *
 from tkinter import ttk
 
-windowDims = (500,500)
+windowDims = (1280,720)
 
 root = Tk()
 root.wm_title("Forbidden Island: Menu")
 root.geometry(f"{windowDims[0]}x{windowDims[1]}")
+
+bg = PhotoImage(file = "img/Menu.png")
+canvas1 = Canvas( root, width = 1280, height = 720)
+canvas1.pack(fill = "both", expand = True)
+canvas1.create_image( 640, 0, image = bg, anchor = "n")
+
 frm = ttk.Frame(root, padding=10)
 
 def startGame(): print("Start")
@@ -32,4 +38,5 @@ canvas= Canvas(root, width= 300, height= 100, bg="red")
 canvas.create_text(150, 50, text="How Many Players?", fill="white", font=('Helvetica 15 bold'))
 canvas.pack()
 root.mainloop()
+
 
