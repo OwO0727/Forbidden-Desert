@@ -39,23 +39,29 @@ tiles_initial= [ "backOfCardImage.png",
 
 tiles = ["img/Tiles/"+s for s in tiles_initial]
 
-image = Image.open(tiles[0])
-resize_image = image.resize((120, 120))
-backOfCard = ImageTk.PhotoImage(resize_image)
+
+
+def getImage(x):
+    image = Image.open(x)
+    resize_image = image.resize((120, 120))
+    return (ImageTk.PhotoImage(resize_image))
+
+
 
 game_board = [
-    ["", "", "", "", ""],
-    ["", "", "", "", ""],
-    ["", "", "", "", ""],
-    ["", "", "", "", ""],
-    ["", "", "", "", ""]
+    ["", "", "x", "", ""],
+    ["", "x", "", "x", ""],
+    ["x", "", "", "", "x"],
+    ["", "x", "", "x", ""],
+    ["", "", "x", "", ""]
 ]
 
-class tiles:
-    def __init__(self, back, front, sandnum):
-        self.back = back
-        self.front = front
-        self.sandnum= sandnum
+for row in range(GAME_BOARD_SIZE):
+    for col in range(GAME_BOARD_SIZE):
+        if row == 2 and col == 2:
+            game_board[row][col] = {"back": getImage(tiles[24]), "front": getImage(tiles[24]), "sand_markers": 0}
+        else:
+            game_board[row][col] = {"back": getImage(tiles[0]), "front": getImage(tiles[11]), "sand_markers": 0}
         
 
 player_pos = (0, 0)
@@ -76,11 +82,12 @@ buttons = []
 for row in range(GAME_BOARD_SIZE):
     button_row = []
     for col in range(GAME_BOARD_SIZE):
+        backOfCard = game_board[row][col]['back']
         button = tk.Button(window, text="", image = backOfCard, width=120, height=120, compound="center")
         button.grid(row=row, column=col)
         button_row.append(button)
     buttons.append(button_row)
 
-update_board_display()
+#update_board_display()
 
 window.mainloop()
