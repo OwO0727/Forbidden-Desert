@@ -36,7 +36,6 @@ def main(root, bg, np):
     def back(): print('Back to menu')
 
     # back = Button(root, text="Back to Menu", command = menu)
-    # back.place(x=windowDims[0] // 2-200 , y=windowDims[1] // 2+100 , width=100, height=50)
     p2 = Button(root, text="2", command = two)
     p2.place(x=windowDims[0] // 2 - 100, y=windowDims[1] // 2-100 , width=50, height=50)
     p3 = Button(root, text="3", command = three)
