@@ -1,6 +1,18 @@
 #main
 import tkinter as tk
 import random
+from PIL import Image, ImageTk
+
+class tiles:
+    def __init__(self, back, front, sandnum):
+        self.back = back
+        self.front = front
+        self.sandnum= sandnum
+
+windowDims = (1280,720)
+window = tk.Tk()
+window.wm_title("Forbidden Desert: Game")
+window.geometry(f"{windowDims[0]}x{windowDims[1]}")
 
 
 GAME_BOARD_SIZE = 5
@@ -9,13 +21,42 @@ MAX_WATER = 8
 MAX_SAND = 12
 WIN_TILE = "F"
 
+tiles_initial= [ "backOfCardImage.png",
+          "crashSiteImage.png", "launchPadImage.png",
+          "engineColumnImage.png", "engineRowImage.png",
+          "navigationDeckColumnImage.png", "navigationDeckRowImage.png",
+          "propellerColumnImage.png", "propellerRowImage.png",
+          "solarCrystalColumnImage.png", "solarCrystalRowImage.png",
+          "gear1Image.png", "gear2Image.png",
+          "gear3Image.png", "gear4Image.png",
+          "gear5Image.png", "gear6Image.png",
+          "gear7Image.png", "gear8Image.png",
+          "sandMarkerImage.png", "highSandMarkerImage.png",
+          "waterTileImage.png", "wellImage.png",
+          "tunnelImage.png", "stormImage.png"
+   ]
+
+
+tiles = ["img/Tiles/"+s for s in tiles_initial]
+
+image = Image.open(tiles[0])
+resize_image = image.resize((120, 120))
+backOfCard = ImageTk.PhotoImage(resize_image)
+
 game_board = [
-    ["X", "S", "C", "C", "C"],
-    ["C", "C", "S", "C", "C"],
-    ["C", "S", "C", "C", "C"],
-    ["C", "C", "C", "S", "C"],
-    ["C", "C", "C", "S", "C"]
+    ["", "", "", "", ""],
+    ["", "", "", "", ""],
+    ["", "", "", "", ""],
+    ["", "", "", "", ""],
+    ["", "", "", "", ""]
 ]
+
+class tiles:
+    def __init__(self, back, front, sandnum):
+        self.back = back
+        self.front = front
+        self.sandnum= sandnum
+        
 
 player_pos = (0, 0)
 player_water = STARTING_WATER
@@ -30,49 +71,12 @@ def update_board_display():
                 button_text = tile
             buttons[row][col].config(text=button_text)
 
-def move_player(delta_x, delta_y):
-    global player_pos
-    new_pos = (player_pos[0] + delta_x, player_pos[1] + delta_y)
-    if new_pos[0] < 0 or new_pos[0] >= GAME_BOARD_SIZE or new_pos[1] < 0 or new_pos[1] >= GAME_BOARD_SIZE:
-        return
-    new_tile = game_board[new_pos[0]][new_pos[1]]
-    if new_tile == "S":
-        player_water -= 1
-        if player_water == 0:
-            end_game(False)
-    elif new_tile == WIN_TILE:
-        end_game(True)
-    player_pos = new_pos
-    update_board_display()
-
-def end_game(win):
-    if win:
-        message = "You won!"
-    else:
-        message = "You lost."
-    message += " Play again?"
-    if tk.messagebox.askyesno("Game Over", message):
-        reset_game()
-    else:
-        window.quit()
-
-def reset_game():
-    global player_pos, player_water
-    player_pos = (0, 0)
-    player_water = STARTING_WATER
-    random.shuffle(game_board)
-    for row in range(GAME_BOARD_SIZE):
-        random.shuffle(game_board[row])
-    update_board_display()
-
-window = tk.Tk()
-window.title("Forbidden Desert")
 
 buttons = []
 for row in range(GAME_BOARD_SIZE):
     button_row = []
     for col in range(GAME_BOARD_SIZE):
-        button = tk.Button(window, text="", width=5, height=2, command=lambda row=row, col=col: move_player(row-player_pos[0], col-player_pos[1]))
+        button = tk.Button(window, text="", image = backOfCard, width=120, height=120, compound="center")
         button.grid(row=row, column=col)
         button_row.append(button)
     buttons.append(button_row)
