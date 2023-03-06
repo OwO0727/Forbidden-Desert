@@ -69,7 +69,7 @@ class navigator(player):
     def movePlayer(self, tile):
         pass
 
-class water_carrier(player):
+class waterCarrier(player):
     def __init__(self, name, water, position):
         super().__init__(name, water, position)
         
@@ -79,3 +79,10 @@ class water_carrier(player):
     def giveWater(self, player):
         player.water = player.water + 1
         self.water = self.water - 1
+
+player1 = archeologist("A",3,[0,0])
+player2 = climber("B",3,[0,0])
+player3 = explorer("C",4,[0,0])
+player4 = meteorologist("D",4,[0,0])
+player5 = navigator("E",4,[0,0])
+player6 = waterCarrier("F",5,[0,0])
