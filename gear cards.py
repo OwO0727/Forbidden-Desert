@@ -48,3 +48,11 @@ class timeThrottle(gearCard):
     
     def use(self,actionsLeft):
         actionsLeft = actionsLeft + 2
+
+# 3 dune blasters
+# 3 jet packs
+# 1 secret water reserve
+# 2 solar shields
+# 2 terrascopes
+# 1 time throttle
+
