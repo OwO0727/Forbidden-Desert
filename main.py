@@ -39,6 +39,7 @@ tiles_initial= [ "backOfCardImage.png",
 
 tiles = ["img/Tiles/"+s for s in tiles_initial]
 
+#setting special tiles
 special_tiles=[
     
                {"tilename": "water1", "back":tiles[21], "front":tiles[22]},
@@ -69,8 +70,7 @@ for i in range(len(special_tiles)):
             special_tiles[i]["location"]=[row, col]
             repeated = False
 
-
-print(special_tiles)
+#resize image
 
 def getImage(x):
     image = Image.open(x)
@@ -100,7 +100,7 @@ for row in range(GAME_BOARD_SIZE):
             tile_info =  next(item for item in special_tiles if item["location"] == [row,col])
             print(tile_info)
                         
-            game_board[row][col] = {"back": tile_info["back"], "front": tile_info["front"], "sand_markers": 0}
+            game_board[row][col] = {"back": getImage(tile_info["back"]), "front": getImage(tile_info["front"]), "sand_markers": 0}
 
         #storm eye
                         
