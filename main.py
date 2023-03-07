@@ -61,13 +61,16 @@ special_tiles=[
                
                ]
 
+temp=[]
 for i in range(len(special_tiles)):
     repeated = True
     while repeated == True:
         row = random.randint(0,4)
         col = random.randint(0,4)
-        if [row, col] not in special_tiles and [row, col]!=[2,2]:
+        if [row, col] not in temp and [row, col]!=[2,2]:
+            print([row, col])
             special_tiles[i]["location"]=[row, col]
+            temp.append([row, col])
             repeated = False
 
 #resize image
