@@ -3,12 +3,6 @@ import tkinter as tk
 import random
 from PIL import Image, ImageTk
 
-class tiles:
-    def __init__(self, back, front, sandnum):
-        self.back = back
-        self.front = front
-        self.sandnum= sandnum
-
 windowDims = (1280,720)
 window = tk.Tk()
 window.wm_title("Forbidden Desert: Game")
@@ -60,7 +54,6 @@ special_tiles=[
                {"tilename": "crash_site", "back":tiles[1], "front":tiles[11]}
                
                ]
-
 temp=[]
 for i in range(len(special_tiles)):
     repeated = True
@@ -88,7 +81,7 @@ def excavate(row, col):
     buttonname.config(image=frontOfCard)
 
 
-    
+#setting game board, locating initial sand location    
 game_board = [
     ["", "", "x", "", ""],
     ["", "x", "", "x", ""],
@@ -97,7 +90,7 @@ game_board = [
     ["", "", "x", "", ""]
 ]
 
-
+#setting up the infomation of each tiles
 normalGearIndex=11
 for row in range(GAME_BOARD_SIZE):
     for col in range(GAME_BOARD_SIZE):
