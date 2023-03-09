@@ -68,7 +68,6 @@ for i in range(len(special_tiles)):
         row = random.randint(0,4)
         col = random.randint(0,4)
         if [row, col] not in temp and [row, col]!=[2,2]:
-            print([row, col])
             special_tiles[i]["location"]=[row, col]
             temp.append([row, col])
             repeated = False
@@ -80,8 +79,16 @@ def getImage(x):
     resize_image = image.resize((120, 120))
     return (ImageTk.PhotoImage(resize_image))
 
+#excavate tiles
+
+def excavate(row, col):
+    buttonname = button_identities[row*5+col]
+    print(buttonname)
+    frontOfCard = game_board[row][col]['front']
+    buttonname.config(image=frontOfCard)
 
 
+    
 game_board = [
     ["", "", "x", "", ""],
     ["", "x", "", "x", ""],
@@ -91,7 +98,7 @@ game_board = [
 ]
 
 
-
+normalGearIndex=11
 for row in range(GAME_BOARD_SIZE):
     for col in range(GAME_BOARD_SIZE):
 
@@ -101,7 +108,6 @@ for row in range(GAME_BOARD_SIZE):
         if  any(tile['location'] == [row,col] for tile in special_tiles):
             
             tile_info =  next(item for item in special_tiles if item["location"] == [row,col])
-            print(tile_info)
                         
             game_board[row][col] = {"back": getImage(tile_info["back"]), "front": getImage(tile_info["front"]), "sand_markers": 0}
 
@@ -113,7 +119,11 @@ for row in range(GAME_BOARD_SIZE):
         #the rest of the tiles
                         
         else:
-            game_board[row][col] = {"back": getImage(tiles[0]), "front": getImage(tiles[11]), "sand_markers": 0}
+            game_board[row][col] = {"back": getImage(tiles[0]), "front": getImage(tiles[normalGearIndex]), "sand_markers": 0}
+            if normalGearIndex <18:
+                normalGearIndex+=1
+            else:
+                normalGearIndex=11
             
         #adding initial sand markers
         
@@ -138,15 +148,19 @@ def update_board_display():
 
 
 buttons = []
-for row in range(GAME_BOARD_SIZE):
+button_identities = []
+for row in range(GAME_BOARD_SIZE): 
     button_row = []
-    for col in range(GAME_BOARD_SIZE):
+    for col in range(GAME_BOARD_SIZE): 
         backOfCard = game_board[row][col]['back']
-        button = tk.Button(window, text="", image = backOfCard, width=120, height=120, compound="center")
+        button = tk.Button(window, text="", image = backOfCard, width=120, height=120, compound="center", command = lambda rw=row, cl=col: excavate(rw, cl))
         button.grid(row=row, column=col)
         button_row.append(button)
+        button_identities.append(button)
     buttons.append(button_row)
 
+print(button_identities)
 update_board_display()
+
 
 window.mainloop()
