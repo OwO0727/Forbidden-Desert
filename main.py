@@ -76,9 +76,15 @@ def getImage(x):
 
 def excavate(row, col):
     buttonname = button_identities[row*5+col]
-    print(buttonname)
     frontOfCard = game_board[row][col]['front']
-    buttonname.config(image=frontOfCard)
+    if buttonname.cget('image') == str(frontOfCard): #check if tile is excavated already
+        print("Already excavated")
+    elif game_board[row][col]['sand_markers']<2: #excavate if sand marker less than 2
+        buttonname = button_identities[row*5+col]
+       
+        buttonname.config(image=frontOfCard)
+    else: #cannot excavate if tile is blocked
+        print("Tile is blocked, cannot be excavate")
 
 
 #setting game board, locating initial sand location    
