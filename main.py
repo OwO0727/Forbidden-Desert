@@ -74,7 +74,7 @@ for j in range(4):
     for i in range(1,4):
         storm_card.append({"type": "direction", "left": 0, "right": 0, "up": 0, "down": 0})
         storm_card[-1][direction[j]]=i
-        storm_card.append({"left": 0, "right": 0, "up": 0, "down": 0})
+        storm_card.append({"type": "direction", "left": 0, "right": 0, "up": 0, "down": 0})
         storm_card[-1][direction[j]]=i
 storm_card.extend([{"type": "storm picks up"}]*3)
 storm_card.extend([{"type": "sun beats down"}]*4)
@@ -167,15 +167,23 @@ def update_board_display():
 
 def storm_eye_moving():
     cardpicked = random.choice(storm_card)
+    sandstormname = button_identities[storm_eye_location[0]*5+storm_eye_location[1]]
     if cardpicked["type"]=="storm picks up":
         print("storm picks up")
     elif cardpicked["type"]=="sun beats down":
         print("sun beats down")
     else:
-        left=cardpicked["left"]
-        right=cardpicked["right"]
-        up=cardpicked["up"]
-        down=cardpicked["down"]
+        print(cardpicked)
+        newlocation = (storm_eye_location[0]-cardpicked["up"]+cardpicked["down"], storm_eye_location[1]+cardpicked["right"]-cardpicked["left"])
+        newlocation[0] = min(max(newlocation[0], 0), 4)
+        newlocation[1] = min(max(newlocation[1], 0), 4)
+        newsandstormname = button_identities[newlocation[0]*5+newlocation[1]]
+        button1_info = sandstormname.grid_info()
+        button2_info = newsandstormname.grid_info()
+        sandstormname.grid(row=button2_info['row'], column=button2_info['column'])
+        newsandstormname.grid(row=button1_info['row'], column=button1_info['column'])
+
+
 
 
 
@@ -190,6 +198,9 @@ for row in range(GAME_BOARD_SIZE):
         button_row.append(button)
         button_identities.append(button)
     buttons.append(button_row)
+
+testbutton = tk.Button(window, command=storm_eye_moving, text="storm card")
+testbutton.grid(row=10, column=10)
 
 update_board_display()
 
