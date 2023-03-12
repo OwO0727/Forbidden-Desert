@@ -12,7 +12,7 @@ window.geometry(f"{windowDims[0]}x{windowDims[1]}")
 GAME_BOARD_SIZE = 5
 STARTING_WATER = 3
 MAX_WATER = 8
-MAX_SAND = 12
+MAX_SAND = 48
 WIN_TILE = "F"
 
 tiles_initial= [ "backOfCardImage.png",
@@ -34,6 +34,7 @@ tiles_initial= [ "backOfCardImage.png",
 tiles = ["img/Tiles/"+s for s in tiles_initial]
 
 #setting special tiles
+
 special_tiles=[
     
                {"tilename": "water1", "back":tiles[21], "front":tiles[22]},
@@ -65,6 +66,20 @@ for i in range(len(special_tiles)):
             temp.append([row, col])
             repeated = False
 
+#setting storm cards
+
+storm_card=[]    
+direction = ["left", "right", "up", "down"]
+for j in range(4):
+    for i in range(1,4):
+        storm_card.append({"type": "direction", "left": 0, "right": 0, "up": 0, "down": 0})
+        storm_card[-1][direction[j]]=i
+        storm_card.append({"left": 0, "right": 0, "up": 0, "down": 0})
+        storm_card[-1][direction[j]]=i
+storm_card.extend([{"type": "storm picks up"}]*3)
+storm_card.extend([{"type": "sun beats down"}]*4)
+
+
 #resize image
 
 def getImage(x):
@@ -88,6 +103,7 @@ def excavate(row, col):
 
 
 #setting game board, locating initial sand location    
+
 game_board = [
     ["", "", "x", "", ""],
     ["", "x", "", "x", ""],
@@ -97,6 +113,7 @@ game_board = [
 ]
 
 #setting up the infomation of each tiles
+
 normalGearIndex=11
 for row in range(GAME_BOARD_SIZE):
     for col in range(GAME_BOARD_SIZE):
@@ -110,10 +127,14 @@ for row in range(GAME_BOARD_SIZE):
                         
             game_board[row][col] = {"back": getImage(tile_info["back"]), "front": getImage(tile_info["front"]), "sand_markers": 0}
 
+            if tile_info["tilename"] == "crash_site":
+                player_pos=(row, col)
+
         #storm eye
                         
         elif row == 2 and col == 2:
             game_board[row][col] = {"back": getImage(tiles[24]), "front": getImage(tiles[24]), "sand_markers": 0}
+            storm_eye_location = (row, col)
 
         #the rest of the tiles
                         
@@ -128,11 +149,9 @@ for row in range(GAME_BOARD_SIZE):
         
         if  temp == "x":
             game_board[row][col]["sand_markers"] = 1
+            MAX_SAND-=1
 
 
-
-
-player_pos = (0, 0)
 player_water = STARTING_WATER
 
 def update_board_display():
@@ -140,10 +159,24 @@ def update_board_display():
         for col in range(GAME_BOARD_SIZE):
             tile = game_board[row][col]
             if (row, col) == player_pos:
-                button_text = "P"
+                button_text = "P\n\n\n"+"S"*tile["sand_markers"]
             else:
-                button_text = tile["sand_markers"]
+                button_text = "\n\n\n"+"S"*tile["sand_markers"]
             buttons[row][col].config(text=button_text)
+
+
+def storm_eye_moving():
+    cardpicked = random.choice(storm_card)
+    if cardpicked["type"]=="storm picks up":
+        print("storm picks up")
+    elif cardpicked["type"]=="sun beats down":
+        print("sun beats down")
+    else:
+        left=cardpicked["left"]
+        right=cardpicked["right"]
+        up=cardpicked["up"]
+        down=cardpicked["down"]
+
 
 
 buttons = []
@@ -158,7 +191,6 @@ for row in range(GAME_BOARD_SIZE):
         button_identities.append(button)
     buttons.append(button_row)
 
-print(button_identities)
 update_board_display()
 
 
