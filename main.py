@@ -90,13 +90,11 @@ def getImage(x):
 #excavate tiles
 
 def excavate(row, col):
-    buttonname = button_identities[row*5+col]
+    buttonname = game_board[row][col]["id"]
     frontOfCard = game_board[row][col]['front']
     if buttonname.cget('image') == str(frontOfCard): #check if tile is excavated already
         print("Already excavated")
     elif game_board[row][col]['sand_markers']<2: #excavate if sand marker less than 2
-        buttonname = button_identities[row*5+col]
-       
         buttonname.config(image=frontOfCard)
     else: #cannot excavate if tile is blocked
         print("Tile is blocked, cannot be excavate")
@@ -160,9 +158,10 @@ def update_board_display():
 storm_eye_location = [2, 2]
 def storm_eye_moving():
     global storm_eye_location
+    global game_board
     global MAX_SAND
     cardpicked = random.choice(storm_card)
-    sandstormname = button_identities[storm_eye_location[0]*5+storm_eye_location[1]]
+    sandstormname = game_board[storm_eye_location[0]][storm_eye_location[1]]["id"]
     if cardpicked["type"]=="storm picks up":
         print("storm picks up")
     elif cardpicked["type"]=="sun beats down":
@@ -184,22 +183,31 @@ def storm_eye_moving():
 
             if  newlocation[0]<0 or newlocation[0]>4 or newlocation[1]<0 or newlocation[1]>4:
                 break
+            
+            newsandstormname = game_board[newlocation[0]][newlocation[1]]["id"]
 
-            newsandstormname = button_identities[newlocation[0]*5+newlocation[1]]
             button1_info = sandstormname.grid_info()
             button2_info = newsandstormname.grid_info()
+
             sandstormname.grid(row=button2_info['row'], column=button2_info['column'])
             newsandstormname.grid(row=button1_info['row'], column=button1_info['column'])
-            button_identities[newlocation[0]*5+newlocation[1]] = sandstormname
-            button_identities[storm_eye_location[0]*5+storm_eye_location[1]] = newsandstormname
-            storm_eye_location = newlocation
+            
+            temp = game_board[newlocation[0]][newlocation[1]]
+            game_board[newlocation[0]][newlocation[1]] = game_board[storm_eye_location[0]][storm_eye_location[1]]
+            game_board[storm_eye_location[0]][storm_eye_location[1]] = temp
+
+            print(game_board[newlocation[0]][newlocation[1]])
+            print(game_board[storm_eye_location[0]][storm_eye_location[1]])
+
             #problem to be fixed
-            game_board[button2_info['row']][button2_info['column']]["sand_markers"] += 1
-            MAX_SAND-=1
+            #game_board[newlocation[0]][newlocation[1]]["sand_markers"] += 1
+            #MAX_SAND-=1
+
+            storm_eye_location = newlocation
 
 
 buttons = []
-button_identities = []
+
 for row in range(GAME_BOARD_SIZE): 
     button_row = []
     for col in range(GAME_BOARD_SIZE): 
@@ -207,7 +215,7 @@ for row in range(GAME_BOARD_SIZE):
         button = tk.Button(window, text="", image = backOfCard, width=120, height=120, compound="center", command = lambda rw=row, cl=col: excavate(rw, cl))
         button.grid(row=row, column=col)
         button_row.append(button)
-        button_identities.append(button)
+        game_board[row][col]["id"]=button
     buttons.append(button_row)
 
 testbutton = tk.Button(window, command=lambda:[storm_eye_moving(),update_board_display()], text="storm card")
