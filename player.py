@@ -1,9 +1,10 @@
 class player:
-    def __init__(self, name, water, position, cards):
-        name = self.name
-        water = self.water
-        position = self.position
-        cards = self.cards
+    def __init__(self, name, water, position, cards, protected):
+        self.name = name
+        self.water = water
+        self.position = position
+        self.cards = cards
+        self.protected = protected
     
     def move(self,tile):
         self.position[0] = tile.x
@@ -20,13 +21,10 @@ class player:
     def pickUpPart(self,part):
         part.collected = True
         return part
-    
-    def timeThrottle(self):
-        if 
 
 class archeologist(player):
-    def __init__(self, name, water, position, cards):
-        super().__init__(name, water, position, cards)
+    def __init__(self, name, water, position, cards, protected):
+        super().__init__(name, water, position, cards, protected)
 
     def clearSand(self, tile):
         if tile.sand > 0:
@@ -37,16 +35,16 @@ class archeologist(player):
 
 
 class climber(player):
-    def __init__(self, name, water, position, cards, ally):
-        super().__init__(name, water, position, cards)
-        ally = self.ally
+    def __init__(self, name, water, position, cards, protected, ally):
+        super().__init__(name, water, position, cards, protected)
+        self.ally = ally
     
     def carryPlayer(self,player):
         if player.position == self.position:
-            ally = player
+            self.ally = player
     
     def dropPlayer(self,player):
-        ally = None
+        self.ally = None
     
     def move(self,tile):
         if (self.ally).position != self.position:
@@ -59,15 +57,15 @@ class climber(player):
 
 
 class explorer(player):
-    def __init__(self, name, water, position, cards):
-        super().__init__(name, water, position, cards)
+    def __init__(self, name, water, position, cards, protected):
+        super().__init__(name, water, position, cards, protected)
 
     def diagonal(self, tile):
         pass
 
 class meteorologist(player):
-    def __init__(self, name, water, position, cards):
-        super().__init__(name, water, position, cards)
+    def __init__(self, name, water, position, cards, protected):
+        super().__init__(name, water, position, cards, protected)
         
     def movestormcard(self, card):
         pass
@@ -76,15 +74,15 @@ class meteorologist(player):
         pass
 
 class navigator(player):
-    def __init__(self, name, water, position, cards):
-        super().__init__(name, water, position, cards)
+    def __init__(self, name, water, position, cards, protected):
+        super().__init__(name, water, position, cards, protected)
         
     def movePlayer(self, tile):
         pass
 
 class waterCarrier(player):
-    def __init__(self, name, water, position, cards):
-        super().__init__(name, water, position, cards)
+    def __init__(self, name, water, position, cards, protected):
+        super().__init__(name, water, position, cards, protected)
         
     def take2water(self, tile):
         if tile.type == "water":
@@ -93,11 +91,9 @@ class waterCarrier(player):
         player.water = player.water + 1
         self.water = self.water - 1
 
-player1 = archeologist("A",3,[0,0],[])
-player2 = climber("B",3,[0,0],[],None)
-player3 = explorer("C",4,[0,0],[])
-player4 = meteorologist("D",4,[0,0],[])
-player5 = navigator("E",4,[0,0],[])
-player6 = waterCarrier("F",5,[0,0],[])
-
-player2.ally = player1
+player1 = archeologist("A",3,[0,0],[],False)
+player2 = climber("B",3,[0,0],[],False,None)
+player3 = explorer("C",4,[0,0],[],False)
+player4 = meteorologist("D",4,[0,0],[],False)
+player5 = navigator("E",4,[0,0],[],False)
+player6 = waterCarrier("F",5,[0,0],[],False)
