@@ -184,6 +184,7 @@ def storm_eye_moving():
 
             if  newlocation[0]<0 or newlocation[0]>4 or newlocation[1]<0 or newlocation[1]>4:
                 break
+
             newsandstormname = button_identities[newlocation[0]*5+newlocation[1]]
             button1_info = sandstormname.grid_info()
             button2_info = newsandstormname.grid_info()
@@ -192,6 +193,7 @@ def storm_eye_moving():
             button_identities[newlocation[0]*5+newlocation[1]] = sandstormname
             button_identities[storm_eye_location[0]*5+storm_eye_location[1]] = newsandstormname
             storm_eye_location = newlocation
+            #problem to be fixed
             game_board[button2_info['row']][button2_info['column']]["sand_markers"] += 1
             MAX_SAND-=1
 
