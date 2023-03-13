@@ -1,10 +1,11 @@
 class player:
-    def __init__(self, image, water, position, cards, protected):
+    def __init__(self, image, water, position, cards, protected, diagonal):
         self.image = image
         self.water = water
         self.position = position
         self.cards = cards
         self.protected = protected
+        self.diagonal = diagonal
     
     def move(self,tile):
         self.position[0] = tile.x
@@ -23,8 +24,8 @@ class player:
         return part
 
 class archeologist(player):
-    def __init__(self, image, water, position, cards, protected):
-        super().__init__(image, water, position, cards, protected)
+    def __init__(self, image, water, position, cards, protected, diagonal):
+        super().__init__(image, water, position, cards, protected, diagonal)
 
     def clearSand(self, tile):
         if tile.sand > 0:
@@ -35,8 +36,8 @@ class archeologist(player):
 
 
 class climber(player):
-    def __init__(self, image, water, position, cards, protected, ally):
-        super().__init__(image, water, position, cards, protected)
+    def __init__(self, image, water, position, cards, protected, diagonal, ally):
+        super().__init__(image, water, position, cards, protected, diagonal)
         self.ally = ally
     
     def carryPlayer(self,player):
@@ -57,15 +58,12 @@ class climber(player):
 
 
 class explorer(player):
-    def __init__(self, image, water, position, cards, protected):
-        super().__init__(image, water, position, cards, protected)
-
-    def diagonal(self, tile):
-        pass # Is this needed or should the move() method be changed for explorers 
+    def __init__(self, image, water, position, cards, protected, diagonal):
+        super().__init__(image, water, position, cards, protected, diagonal)
 
 class meteorologist(player):
-    def __init__(self, image, water, position, cards, protected):
-        super().__init__(image, water, position, cards, protected)
+    def __init__(self, image, water, position, cards, protected, diagonal):
+        super().__init__(image, water, position, cards, protected, diagonal)
         
     def movestormcard(self, stormPile, cardnum, actionsLeft):
         for i in range(cardnum):
@@ -85,16 +83,16 @@ class meteorologist(player):
         return cardnum, actionsLeft
 
 class navigator(player):
-    def __init__(self, image, water, position, cards, protected):
-        super().__init__(image, water, position, cards, protected)
+    def __init__(self, image, water, position, cards, protected, diagonal):
+        super().__init__(image, water, position, cards, protected, diagonal)
         
     def movePlayer(self, player, tile):
         player.location = [tile.x,tile.y]
         return player
 
 class waterCarrier(player):
-    def __init__(self, image, water, position, cards, protected):
-        super().__init__(image, water, position, cards, protected)
+    def __init__(self, image, water, position, cards, protected, diagonal):
+        super().__init__(image, water, position, cards, protected, diagonal)
         
     def take2water(self, tile):
         if tile.type == "water":
@@ -104,9 +102,9 @@ class waterCarrier(player):
         self.water = self.water - 1
         return player
 
-player1 = archeologist("./img/Players/archeologistImage.png",3,[0,0],[],False)
-player2 = climber("./img/Players/climberImage.png",3,[0,0],[],False,None)
-player3 = explorer("./img/Players/explorerImage.png",4,[0,0],[],False)
-player4 = meteorologist("./img/Players/meteorologistImage.png",4,[0,0],[],False)
-player5 = navigator("./img/Players/navigatorImage.png",4,[0,0],[],False)
-player6 = waterCarrier("./img/Players/waterCarrierImage.png",5,[0,0],[],False)
+player1 = archeologist("./img/Players/archeologistImage.png",3,[0,0],[],False,False)
+player2 = climber("./img/Players/climberImage.png",3,[0,0],[],False,False,None)
+player3 = explorer("./img/Players/explorerImage.png",4,[0,0],[],False,True)
+player4 = meteorologist("./img/Players/meteorologistImage.png",4,[0,0],[],False,False)
+player5 = navigator("./img/Players/navigatorImage.png",4,[0,0],[],False,False)
+player6 = waterCarrier("./img/Players/waterCarrierImage.png",5,[0,0],[],False,False)
