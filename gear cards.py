@@ -34,7 +34,7 @@ class solarShield(gearCard):
         super().__init__(images)
     
     def use(self,player):
-        player.protected = True # I don't know how to implement this
+        player.protected = True
 
 class terrascope(gearCard):
     def __init__(self,images):
