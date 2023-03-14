@@ -3,6 +3,7 @@ import tkinter as tk
 import random
 from PIL import Image, ImageTk
 
+
 windowDims = (1280,720)
 window = tk.Tk()
 window.wm_title("Forbidden Desert: Game")
@@ -80,6 +81,7 @@ storm_card.extend([{"type": "storm picks up"}]*3)
 storm_card.extend([{"type": "sun beats down"}]*4)
 
 
+
 #resize image
 
 def getImage(x):
@@ -149,19 +151,29 @@ def update_board_display():
             tile = game_board[row][col]
 
             if (row, col) == player_pos:
-                button_text = "P\n\n\n"+str(tile["sand_markers"])
+                button_text = "P\n\n\n"+"S"*tile["sand_markers"]
             else:
-                button_text = "\n\n\n"+str(tile["sand_markers"])
+                button_text = "\n\n\n"+"S"*tile["sand_markers"]
             game_board[row][col]["id"].config(text=button_text)
 
 
 #moving storm eye
 storm_eye_location = [2, 2]
+current_storm_deck = []
 def storm_eye_moving():
     global storm_eye_location
     global game_board
     global MAX_SAND
-    cardpicked = random.choice(storm_card)
+    global current_storm_deck
+
+    if len(current_storm_deck)== 0:
+        current_storm_deck = storm_card.copy()
+        print("reshuffle")
+
+    
+    cardpicked = random.choice(current_storm_deck)
+    current_storm_deck.remove(cardpicked)
+
     sandstormname = game_board[storm_eye_location[0]][storm_eye_location[1]]["id"]
     if cardpicked["type"]=="storm picks up":
         print("storm picks up")
