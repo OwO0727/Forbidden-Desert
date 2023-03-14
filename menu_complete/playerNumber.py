@@ -33,7 +33,7 @@ def main(root, bg, np, bp):
         playerNum=4
     def five():
         global playerNum
-        playerNum=2
+        playerNum=5
     def back():
         for widget in root.winfo_children(): widget.destroy()
         bp()
