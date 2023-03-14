@@ -147,11 +147,12 @@ def update_board_display():
     for row in range(GAME_BOARD_SIZE):
         for col in range(GAME_BOARD_SIZE):
             tile = game_board[row][col]
+
             if (row, col) == player_pos:
-                button_text = "P\n\n\n"+"S"*tile["sand_markers"]
+                button_text = "P\n\n\n"+str(tile["sand_markers"])
             else:
-                button_text = "\n\n\n"+"S"*tile["sand_markers"]
-            buttons[row][col].config(text=button_text)
+                button_text = "\n\n\n"+str(tile["sand_markers"])
+            game_board[row][col]["id"].config(text=button_text)
 
 
 #moving storm eye
@@ -167,8 +168,7 @@ def storm_eye_moving():
     elif cardpicked["type"]=="sun beats down":
         print("sun beats down")
     else:
-        #NOT FINISHED
-        print(cardpicked)
+
         count= max(cardpicked["up"], cardpicked["down"], cardpicked["right"], cardpicked["left"])
         for i in range(count):
             
@@ -187,36 +187,34 @@ def storm_eye_moving():
             newsandstormname = game_board[newlocation[0]][newlocation[1]]["id"]
 
             button1_info = sandstormname.grid_info()
+            button1_command = sandstormname['command']
             button2_info = newsandstormname.grid_info()
+            button2_command = newsandstormname['command']
 
+            sandstormname['command'] = button2_command
             sandstormname.grid(row=button2_info['row'], column=button2_info['column'])
+            newsandstormname['command'] = button1_command
             newsandstormname.grid(row=button1_info['row'], column=button1_info['column'])
             
             temp = game_board[newlocation[0]][newlocation[1]]
             game_board[newlocation[0]][newlocation[1]] = game_board[storm_eye_location[0]][storm_eye_location[1]]
             game_board[storm_eye_location[0]][storm_eye_location[1]] = temp
 
-            print(game_board[newlocation[0]][newlocation[1]])
-            print(game_board[storm_eye_location[0]][storm_eye_location[1]])
 
-            #problem to be fixed
-            #game_board[newlocation[0]][newlocation[1]]["sand_markers"] += 1
-            #MAX_SAND-=1
+            game_board[storm_eye_location[0]][storm_eye_location[1]]["sand_markers"]+=1
+            MAX_SAND-=1
 
             storm_eye_location = newlocation
 
 
-buttons = []
+
 
 for row in range(GAME_BOARD_SIZE): 
-    button_row = []
     for col in range(GAME_BOARD_SIZE): 
         backOfCard = game_board[row][col]['back']
         button = tk.Button(window, text="", image = backOfCard, width=120, height=120, compound="center", command = lambda rw=row, cl=col: excavate(rw, cl))
         button.grid(row=row, column=col)
-        button_row.append(button)
         game_board[row][col]["id"]=button
-    buttons.append(button_row)
 
 testbutton = tk.Button(window, command=lambda:[storm_eye_moving(),update_board_display()], text="storm card")
 testbutton.grid(row=10, column=10)
