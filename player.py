@@ -69,7 +69,7 @@ class meteorologist(player):
         for i in range(cardnum):
             print(stormPile[i]) # Replace with tkinter equivalent
         # Code needed to look at all the top cards
-        # Player must be able to choose a card and move it to the bottom of the pile
+        # Player must be able to choose a card and move it to the bottom of the pile if they want to
         x = 2 # Example card index
         temp = stormPile[x]
         stormPile.remove(stormPile[x]) # Optionally
@@ -87,7 +87,7 @@ class navigator(player):
         super().__init__(image, water, position, cards, protected, ability)
         
     def movePlayer(self, player, tile): # Move another player up to three unblocked tiles per action
-        player.location = [tile.x,tile.y]
+        player.location = [tile.x,tile.y] # The explorer and climber may be moved according to their special abilities
         return player
 
 class waterCarrier(player):
