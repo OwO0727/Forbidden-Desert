@@ -103,7 +103,7 @@ class waterCarrier(player):
         return player
 
 player1 = archeologist("./img/Players/archeologistImage.png",3,[0,0],[],False,None)
-player2 = climber("./img/Players/climberImage.png",3,[0,0],[],False,False,"can move on blocked tiles") # The climber and other players on the same tile can't be buried
+player2 = climber("./img/Players/climberImage.png",3,[0,0],[],False,"can move on blocked tiles",None) # The climber and other players on the same tile can't be buried
 player3 = explorer("./img/Players/explorerImage.png",4,[0,0],[],False,"can move and influence tiles diagonally") # The explorer can move, clear sand and use dune blasters diagonally
 player4 = meteorologist("./img/Players/meteorologistImage.png",4,[0,0],[],False,None)
 player5 = navigator("./img/Players/navigatorImage.png",4,[0,0],[],False,None)
