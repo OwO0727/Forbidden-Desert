@@ -152,6 +152,8 @@ for row in range(GAME_BOARD_SIZE):
             
             if any(tile_info["tilename"] in x for x in parts):
                 parts_location.append({"tilename": tile_info["tilename"], "location": (row, col)})
+                parts_location = sorted(parts_location, key=lambda x: x["tilename"])
+               
 
         #storm eye                   
         elif row == 2 and col == 2:
@@ -226,12 +228,12 @@ def storm_eye_moving():
                     game_board[newlocation[0]][newlocation[1]] = game_board[storm_eye_location[0]][storm_eye_location[1]]
                     game_board[storm_eye_location[0]][storm_eye_location[1]] = temp
                     game_board[storm_eye_location[0]][storm_eye_location[1]]["sand_markers"]+=1
-
-                    #NOT FINISHED
-                    if  any(tile['location'] == ([newlocation[0]],[newlocation[1]]) for tile in parts_location):
+                    
+                    #relocate parts location if storm eye moved
+                    if  any(tile['location'] == (newlocation[0],newlocation[1]) for tile in parts_location):
                         for tile in parts_location:
-                            if tile["location"] == ([newlocation[0]],[newlocation[1]]):
-                                tile["location"] = ([storm_eye_location[0]],[storm_eye_location[1]])
+                            if tile["location"] == (newlocation[0],newlocation[1]):
+                                tile["location"] = (storm_eye_location[0],storm_eye_location[1])
                         print(parts_location)
                         
 
@@ -241,27 +243,59 @@ def storm_eye_moving():
                         print("GAME LOST")
                         LOST = True
 
-#setting location of parts:
-#def locating_parts():
-    #if 
+#setting location of parts
+PartA = 0
+PartB = 0
+PartC = 0
+PartD = 0
+def locating_parts():
+    global PartA, PartB, PartC, PartD
+    list_of_parts = [PartA, PartB, PartC, PartD]
+    count = 0
+    for i in range(0, 8, 2):
+        location1_row, location1_col = parts_location[i]["location"]
+        location2_row, location2_col = parts_location[i+1]["location"]
+        if game_board[location1_row][location1_col]["excavate"] == True and game_board[location2_row][location2_col]["excavate"] == True:
+            list_of_parts[count] = (location2_row, location1_col)
+
+        count+=1
+    
+
+        
 
 
-
+sandtile = Image.open(tiles[19]).resize((120, 120))
+blockedsandtile = Image.open(tiles[20]).resize((120, 120))
+mask_image = sandtile.convert("L")
+sandtile.putalpha(mask_image)
+blockedsandtile.putalpha(mask_image)
 def update_board_display():
     for row in range(GAME_BOARD_SIZE):
         for col in range(GAME_BOARD_SIZE):
             tile = game_board[row][col]
+            if tile["excavate"]:
+                tileimage = tile["front"]
+            else:
+                tileimage = tile["back"]
+
+            if tile["sand_markers"] != 0:
+                if tile["sand_markers"] == 1:
+                    tileimage.paste(sandtile, (0, 0))
+                elif tile["sand_markers"] >= 2:
+                    tileimage.paste(blockedsandtile, (0, 0))
+                tile["id"].config(image=tileimage)
+
             if (row, col) == player_pos:
                 button_text = "P\n\n\n"+"S"*tile["sand_markers"]
             else:
                 button_text = "\n\n\n"+"S"*tile["sand_markers"]
-            game_board[row][col]["id"].config(text=button_text)
+            tile["id"].config(text=button_text)
 
 
 for row in range(GAME_BOARD_SIZE): 
     for col in range(GAME_BOARD_SIZE): 
         backOfCard = game_board[row][col]['back']
-        button = tk.Button(window, text="", image = backOfCard, width=120, height=120, compound="center", command = lambda rw=row, cl=col: excavate(rw, cl))
+        button = tk.Button(window, text="", image = backOfCard, width=120, height=120, compound="center", command = lambda rw=row, cl=col: [excavate(rw, cl), locating_parts()])
         button.grid(row=row, column=col)
         game_board[row][col]["id"]=button
 
