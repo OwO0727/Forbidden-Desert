@@ -9,16 +9,16 @@ class duneBlaster(gearCard):
         super().__init__(images)
     
     def clearSand(self,tile):
-        tile.sand = 0
+        tile['sand_markers'] = 0
 
 class jetpack(gearCard):
     def __init__(self,images):
         super().__init__(images)
 
-    def move(self,player,tile):
-        if tile.sand < 2:
-            player.location[0] = tile.x
-            player.location[1] = tile.y
+    def move(self,player,tile,column,row):
+        if tile['sand_markers'] < 2:
+            player.position[0] = column
+            player.position[1] = row
 
 class secretWaterReserve(gearCard):
     def __init__(self,images):
@@ -26,7 +26,7 @@ class secretWaterReserve(gearCard):
     
     def use(self,host,players):
         for player in players:
-            if player.location == host.location:
+            if player.position == host.position:
                 player.water = player.water + 2
 
 class solarShield(gearCard):
@@ -70,3 +70,4 @@ for i in range(2):
 pile.append(timeThrottle(("./img/Equipments/timeThrottleImage.png", "./img/Equipments/haveTimeThrottleImage.png", "./img/Equipments/noTimeThrottleImage.png")))
 
 random.shuffle(pile)
+
