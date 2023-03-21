@@ -1,4 +1,5 @@
 #main
+from tkinter import *
 import tkinter as tk
 import random
 from PIL import Image, ImageTk
@@ -8,6 +9,8 @@ windowDims = (1280,720)
 window = tk.Tk()
 window.wm_title("Forbidden Desert: Game")
 window.geometry(f"{windowDims[0]}x{windowDims[1]}")
+c = Canvas(window, width=1280, height=720, bg="#F7DC6F")
+c.place(x=0, y=0)
 
 
 GAME_BOARD_SIZE = 5
@@ -259,32 +262,34 @@ def locating_parts():
             list_of_parts[count] = (location2_row, location1_col)
 
         count+=1
-    
 
-        
-
-
+#put sand tiles on button
 sandtile = Image.open(tiles[19]).resize((120, 120))
 blockedsandtile = Image.open(tiles[20]).resize((120, 120))
-mask_image = sandtile.convert("L")
-sandtile.putalpha(mask_image)
-blockedsandtile.putalpha(mask_image)
+mask= sandtile.convert("L")
+new_image = 0
+tile_with_sand=0
+tileimage = 0
+temp_array = []
+
 def update_board_display():
+    global tileimage
+    global new_image
+    global temp_array
     for row in range(GAME_BOARD_SIZE):
         for col in range(GAME_BOARD_SIZE):
             tile = game_board[row][col]
             if tile["excavate"]:
-                tileimage = tile["front"]
+                tileimage = ImageTk.getimage(tile["front"])
             else:
-                tileimage = tile["back"]
-
+                tileimage = ImageTk.getimage(tile["back"])
             if tile["sand_markers"] != 0:
                 if tile["sand_markers"] == 1:
-                    tileimage.paste(sandtile, (0, 0))
+                    tileimage.paste(sandtile, (0, 0), mask)
                 elif tile["sand_markers"] >= 2:
-                    tileimage.paste(blockedsandtile, (0, 0))
-                tile["id"].config(image=tileimage)
-
+                    tileimage.paste(blockedsandtile, (0, 0), mask)
+                temp_array.append(ImageTk.PhotoImage(tileimage))
+                tile["id"].config(image=temp_array[-1])
             if (row, col) == player_pos:
                 button_text = "P\n\n\n"+"S"*tile["sand_markers"]
             else:
