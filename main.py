@@ -36,7 +36,13 @@ tiles_initial= [ "backOfCardImage.png",
           "mirageImage.png"
    ]
 
+parts_initial=[
+    "engineImage.png", "navegationDeckImage.png", "propellerImage.png", "solarCrystalImage.png"
+]
+
 tiles = ["img/Tiles/"+s for s in tiles_initial]
+
+parts_photos = ["img/Tiles/"+s for s in parts_initial]
 
 #setting special tiles
 
@@ -118,12 +124,15 @@ def getImage(x):
 def excavate(row, col):
     buttonname = game_board[row][col]
     frontOfCard = game_board[row][col]['front']
+    tiles_can_be_digged = [(row, col), (row+1, col), (row-1, col), (row, col+1), (row, col-1)]
     #if player_pos == (row, col): #check if player on the tile
     if buttonname["excavate"]==True: #check if tile is excavated already
         print("Already excavated")
     elif game_board[row][col]['sand_markers']<1: #excavate if sand marker less than 1
         buttonname["id"].config(image=frontOfCard)
         buttonname["excavate"]=True
+    elif player_pos in tiles_can_be_digged:
+        buttonname["sand_markers"] -= 1
     else: #cannot excavate if tile is blocked
         print("Tile is blocked, cannot be excavate")
     #else:
@@ -174,8 +183,6 @@ for row in range(GAME_BOARD_SIZE):
             MAX_SAND-=1
 
         game_board[row][col]["excavate"]=False
-
-print(parts_location)
 
 #moving storm eye
 storm_eye_location = [2, 2]
@@ -237,7 +244,7 @@ def storm_eye_moving():
                         for tile in parts_location:
                             if tile["location"] == (newlocation[0],newlocation[1]):
                                 tile["location"] = (storm_eye_location[0],storm_eye_location[1])
-                        print(parts_location)
+                        
                         
 
                     MAX_SAND-=1
@@ -246,32 +253,31 @@ def storm_eye_moving():
                         print("GAME LOST")
                         LOST = True
 
+print(parts_location)
+
 #setting location of parts
-PartA = 0
-PartB = 0
-PartC = 0
-PartD = 0
+list_of_parts = [0, 0, 0, 0]
+
 def locating_parts():
-    global PartA, PartB, PartC, PartD
-    list_of_parts = [PartA, PartB, PartC, PartD]
+    global list_of_parts
+    
     count = 0
     for i in range(0, 8, 2):
         location1_row, location1_col = parts_location[i]["location"]
         location2_row, location2_col = parts_location[i+1]["location"]
         if game_board[location1_row][location1_col]["excavate"] == True and game_board[location2_row][location2_col]["excavate"] == True:
-            list_of_parts[count] = (location2_row, location1_col)
-
+            list_of_parts[count] = [location2_row, location1_col]
         count+=1
+    
+    
 
-#put sand tiles on button
+#put sand tiles on button and update player position
 sandtile = Image.open(tiles[19]).resize((120, 120))
 blockedsandtile = Image.open(tiles[20]).resize((120, 120))
 mask= sandtile.convert("L")
 new_image = 0
-tile_with_sand=0
 tileimage = 0
 temp_array = []
-
 def update_board_display():
     global tileimage
     global new_image
@@ -279,6 +285,7 @@ def update_board_display():
     for row in range(GAME_BOARD_SIZE):
         for col in range(GAME_BOARD_SIZE):
             tile = game_board[row][col]
+            #sandtile
             if tile["excavate"]:
                 tileimage = ImageTk.getimage(tile["front"])
             else:
@@ -288,8 +295,24 @@ def update_board_display():
                     tileimage.paste(sandtile, (0, 0), mask)
                 elif tile["sand_markers"] >= 2:
                     tileimage.paste(blockedsandtile, (0, 0), mask)
-                temp_array.append(ImageTk.PhotoImage(tileimage))
-                tile["id"].config(image=temp_array[-1])
+            temp_array.append(ImageTk.PhotoImage(tileimage))
+            tile["id"].config(image=temp_array[-1])
+            
+            #add parts if both hints are excavated
+            #for i in range(4):
+               # if list_of_parts[i] == [row, col]:
+                    #print("ran")
+                    #tileimage = ImageTk.getimage(tile["id"].config("image"))
+                    #part_photo = Image.open(parts_photos[i])
+                    #part_mask= sandtile.convert("L")
+                    
+                    #tileimage.paste(part_photo, (0, 0), part_mask)
+
+                    #temp_array.append(ImageTk.PhotoImage(tileimage))
+                    #tile["id"].config(image=temp_array[-1])
+
+
+            #player position
             if (row, col) == player_pos:
                 button_text = "P\n\n\n"+"S"*tile["sand_markers"]
             else:
@@ -300,7 +323,7 @@ def update_board_display():
 for row in range(GAME_BOARD_SIZE): 
     for col in range(GAME_BOARD_SIZE): 
         backOfCard = game_board[row][col]['back']
-        button = tk.Button(window, text="", image = backOfCard, width=120, height=120, compound="center", command = lambda rw=row, cl=col: [excavate(rw, cl), locating_parts()])
+        button = tk.Button(window, text="", image = backOfCard, width=120, height=120, compound="center", command = lambda rw=row, cl=col: [excavate(rw, cl), locating_parts(), update_board_display()])
         button.grid(row=row, column=col)
         game_board[row][col]["id"]=button
 
