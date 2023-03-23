@@ -245,7 +245,11 @@ def storm_eye_moving():
                             if tile["location"] == (newlocation[0],newlocation[1]):
                                 tile["location"] = (storm_eye_location[0],storm_eye_location[1])
                         
-                        
+                    #relocate revealed parts
+                    #for i in range(4):
+                        #if list_of_parts[i] == [newlocation[0], newlocation[1]]:
+                            #list_of_parts[i] = [storm_eye_location[0],storm_eye_location[1]]
+
 
                     MAX_SAND-=1
                     storm_eye_location = newlocation
@@ -299,24 +303,18 @@ def update_board_display():
             tile["id"].config(image=temp_array[-1])
             
             #add parts if both hints are excavated
-            #for i in range(4):
-               # if list_of_parts[i] == [row, col]:
-                    #print("ran")
-                    #tileimage = ImageTk.getimage(tile["id"].config("image"))
-                    #part_photo = Image.open(parts_photos[i])
-                    #part_mask= sandtile.convert("L")
-                    
-                    #tileimage.paste(part_photo, (0, 0), part_mask)
-
-                    #temp_array.append(ImageTk.PhotoImage(tileimage))
-                    #tile["id"].config(image=temp_array[-1])
+            for i in range(4):
+                if list_of_parts[i] == [row, col]:
+                    part_text = "Part "+str(i)
+                else:
+                    part_text = "\n"
 
 
             #player position
+            button_text = "\n"+part_text+"\n"+"S"*tile["sand_markers"]
             if (row, col) == player_pos:
-                button_text = "P\n\n\n"+"S"*tile["sand_markers"]
-            else:
-                button_text = "\n\n\n"+"S"*tile["sand_markers"]
+                button_text = "P"+button_text
+                
             tile["id"].config(text=button_text)
 
 
