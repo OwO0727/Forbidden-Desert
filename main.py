@@ -303,18 +303,21 @@ def update_board_display():
             tile["id"].config(image=temp_array[-1])
             
             #add parts if both hints are excavated
+            flag = False
             for i in range(4):
-                if list_of_parts[i] == [row, col]:
-                    part_text = "Part "+str(i)
-                else:
-                    part_text = "\n"
-
-
+                if flag == False:
+                    if list_of_parts[i] == [row, col]:
+                        button_text = "\nPart "+str(i)+"\n"+"S"*tile["sand_markers"]
+                        flag = True
+                    else:
+                        button_text = "\n\n\n"+"S"*tile["sand_markers"]
+                    
             #player position
-            button_text = "\n"+part_text+"\n"+"S"*tile["sand_markers"]
             if (row, col) == player_pos:
                 button_text = "P"+button_text
-                
+            else:
+                button_text = "\n"+button_text
+
             tile["id"].config(text=button_text)
 
 
