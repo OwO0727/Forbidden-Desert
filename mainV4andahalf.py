@@ -251,59 +251,62 @@ def main(window):
                     current_storm_deck = storm_card.copy()
                     print("reshuffle")
                 cardpicked = random.choice(current_storm_deck)
-                print(cardpicked)
                 current_storm_deck.remove(cardpicked)
-                sandstormname = game_board[storm_eye_location[0]][storm_eye_location[1]]["id"]
-                if cardpicked["type"]=="storm picks up":
-                    sand_storm_level += 1
-                elif cardpicked["type"]=="sun beats down":
-                    for player in players: player.water-=1
+                window.after(1000*i, do_storm_card, cardpicked)
+
+    def do_storm_card(cardpicked):
+        print(cardpicked)
+        nonlocal storm_eye_location, game_board, MAX_SAND, current_storm_deck, sand_storm_level, players
+        sandstormname = game_board[storm_eye_location[0]][storm_eye_location[1]]["id"]
+        if cardpicked["type"]=="storm picks up":
+            sand_storm_level += 1
+        elif cardpicked["type"]=="sun beats down":
+            for player in players: player.water-=1
+        else:
+            count= max(cardpicked["up"], cardpicked["down"], cardpicked["right"], cardpicked["left"])
+            for i in range(count):                    
+                if cardpicked["up"]>0:
+                    newlocation = [storm_eye_location[0]-1, storm_eye_location[1]]
+                elif cardpicked["down"]>0:
+                    newlocation = [storm_eye_location[0]+1, storm_eye_location[1]]
+                elif cardpicked["right"]>0:
+                    newlocation = [storm_eye_location[0], storm_eye_location[1]+1]
                 else:
-                    count= max(cardpicked["up"], cardpicked["down"], cardpicked["right"], cardpicked["left"])
-                    for i in range(count):                    
-                        if cardpicked["up"]>0:
-                            newlocation = [storm_eye_location[0]-1, storm_eye_location[1]]
-                        elif cardpicked["down"]>0:
-                            newlocation = [storm_eye_location[0]+1, storm_eye_location[1]]
-                        elif cardpicked["right"]>0:
-                            newlocation = [storm_eye_location[0], storm_eye_location[1]+1]
-                        else:
-                            newlocation = [storm_eye_location[0], storm_eye_location[1]-1]
+                    newlocation = [storm_eye_location[0], storm_eye_location[1]-1]
 
-                        if  newlocation[0]<0 or newlocation[0]>4 or newlocation[1]<0 or newlocation[1]>4:
-                            break                   
-                        newsandstormname = game_board[newlocation[0]][newlocation[1]]["id"]
-                        button1_info = sandstormname.grid_info()
-                        button1_command = sandstormname['command']
-                        button2_info = newsandstormname.grid_info()
-                        button2_command = newsandstormname['command']
-                        sandstormname['command'] = button2_command
-                        sandstormname.grid(row=button2_info['row'], column=button2_info['column'])
-                        newsandstormname['command'] = button1_command
-                        newsandstormname.grid(row=button1_info['row'], column=button1_info['column'])                    
-                        
-                        temp = game_board[newlocation[0]][newlocation[1]]
-                        game_board[newlocation[0]][newlocation[1]] = game_board[storm_eye_location[0]][storm_eye_location[1]]
-                        game_board[storm_eye_location[0]][storm_eye_location[1]] = temp
-                        game_board[storm_eye_location[0]][storm_eye_location[1]]["sand_markers"]+=1
-                        
-                        #relocate parts location if storm eye moved
-                        if  any(tile['location'] == (newlocation[0],newlocation[1]) for tile in parts_location):
-                            for tile in parts_location:
-                                if tile["location"] == (newlocation[0],newlocation[1]):
-                                    tile["location"] = (storm_eye_location[0],storm_eye_location[1])
-                        
-                        for player in players:
-                            if player.position == newlocation: player.position = storm_eye_location
-                            
+                if  newlocation[0]<0 or newlocation[0]>4 or newlocation[1]<0 or newlocation[1]>4:
+                    break                   
+                newsandstormname = game_board[newlocation[0]][newlocation[1]]["id"]
+                button1_info = sandstormname.grid_info()
+                button1_command = sandstormname['command']
+                button2_info = newsandstormname.grid_info()
+                button2_command = newsandstormname['command']
+                sandstormname['command'] = button2_command
+                sandstormname.grid(row=button2_info['row'], column=button2_info['column'])
+                newsandstormname['command'] = button1_command
+                newsandstormname.grid(row=button1_info['row'], column=button1_info['column'])                    
+                
+                temp = game_board[newlocation[0]][newlocation[1]]
+                game_board[newlocation[0]][newlocation[1]] = game_board[storm_eye_location[0]][storm_eye_location[1]]
+                game_board[storm_eye_location[0]][storm_eye_location[1]] = temp
+                game_board[storm_eye_location[0]][storm_eye_location[1]]["sand_markers"]+=1
+                
+                #relocate parts location if storm eye moved
+                if  any(tile['location'] == (newlocation[0],newlocation[1]) for tile in parts_location):
+                    for tile in parts_location:
+                        if tile["location"] == (newlocation[0],newlocation[1]):
+                            tile["location"] = (storm_eye_location[0],storm_eye_location[1])
+                
+                for player in players:
+                    if player.position == newlocation: player.position = storm_eye_location
+                    
 
-                        MAX_SAND-=1
-                        storm_eye_location = newlocation
-                        if MAX_SAND == 0:
-                            print("GAME LOST")
-                            LOST = True
-                        update_board_display()
-                t.sleep(3)
+                MAX_SAND-=1
+                storm_eye_location = newlocation
+                if MAX_SAND == 0:
+                    print("GAME LOST")
+                    LOST = True
+                update_board_display()
 
     #setting location of parts
     list_of_parts = [0, 0, 0, 0]
@@ -347,10 +350,20 @@ def main(window):
                         tileimage.paste(blockedsandtile, (0, 0), mask)
                 temp_array.append(ImageTk.PhotoImage(tileimage))
                 tile["id"].config(image=temp_array[-1])
+
+                #add parts if both hints are excavated
+                flag = False
+                for i in range(4):
+                    if flag == False:
+                        if list_of_parts[i] == [row, col]:
+                            button_text = "\nPart "+str(i)+"\n"+"S"*tile["sand_markers"]
+                            flag = True
+                        else:
+                            button_text = "\n\n\n"+"S"*tile["sand_markers"]
                 
                 #!CHANGED
 
-                button_text = str([player.name for player in players if player.position==[row,col]])+"\n\n\n"+"S"*tile["sand_markers"]
+                button_text = str([player.name for player in players if player.position==[row,col]])+button_text
                 tile["id"].config(text=button_text)
 
 
