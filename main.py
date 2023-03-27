@@ -193,6 +193,7 @@ def storm_eye_moving():
     global MAX_SAND
     global current_storm_deck
     global sand_storm_level
+    global parts_location
     card_count = sand_storm_meter[sand_storm_level]
     if card_count == "dead":
         print("GAME LOST")
@@ -244,11 +245,13 @@ def storm_eye_moving():
                         for tile in parts_location:
                             if tile["location"] == (newlocation[0],newlocation[1]):
                                 tile["location"] = (storm_eye_location[0],storm_eye_location[1])
+                                print("moved to")
+                                print(tile["location"])
                         
                     #relocate revealed parts
-                    #for i in range(4):
-                        #if list_of_parts[i] == [newlocation[0], newlocation[1]]:
-                            #list_of_parts[i] = [storm_eye_location[0],storm_eye_location[1]]
+                    for i in range(4):
+                        if list_of_parts[i] == [newlocation[0], newlocation[1]]:
+                            list_of_parts[i] = [storm_eye_location[0],storm_eye_location[1]]
 
 
                     MAX_SAND-=1
@@ -272,6 +275,7 @@ def locating_parts():
         if game_board[location1_row][location1_col]["excavate"] == True and game_board[location2_row][location2_col]["excavate"] == True:
             list_of_parts[count] = [location2_row, location1_col]
         count+=1
+    print(list_of_parts)
     
     
 
@@ -305,12 +309,12 @@ def update_board_display():
             #add parts if both hints are excavated
             flag = False
             for i in range(4):
-                if flag == False:
-                    if list_of_parts[i] == [row, col]:
-                        button_text = "\nPart "+str(i)+"\n"+"S"*tile["sand_markers"]
-                        flag = True
-                    else:
-                        button_text = "\n\n\n"+"S"*tile["sand_markers"]
+                if list_of_parts[i] == [row, col]:
+                    button_text = "\nPart "+str(i)+"\n"+"S"*tile["sand_markers"]
+                    flag = True
+            
+            if flag == False:
+                button_text = "\n\n\n"+"S"*tile["sand_markers"]
                     
             #player position
             if (row, col) == player_pos:
