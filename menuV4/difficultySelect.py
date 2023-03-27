@@ -72,7 +72,7 @@ def main(root, bg, np ,bp):
     Button(root,text="Normal", bg="#bf9000", command=lambda: setupSandStormTimer(1)).place(width=100, height=60, x=windowDims[0]//2-250, y=310)
     Button(root,text="Elite", bg="#bf9000", command=lambda: setupSandStormTimer(2)).place(width=100, height=60, x=windowDims[0]//2-250, y=370)
     Button(root,text="Legendary", bg="#bf9000", command=lambda: setupSandStormTimer(3)).place(width=100, height=60, x=windowDims[0]//2-250, y=430)
-    button['confirm'] = ttk.Button(root,text="Confirm", command=lambda: confirm()).place(width=100, height=60, x=windowDims[0]//2-50, y=340)
+    Button(root,text="Confirm", bg="#bf9000",command=lambda: confirm()).place(width=100, height=60, x=windowDims[0]//2-50, y=340)
     Button(root,text="Back", bg="#bf9000", command=lambda: back()).place(width=100, height=60, x=windowDims[0]//2-50, y=600)
 
 # state = DISABLED
